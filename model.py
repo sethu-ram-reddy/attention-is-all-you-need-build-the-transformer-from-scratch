@@ -112,8 +112,12 @@ def build_position_index_column(max_len):
     column_vector = indices.unsqueeze(1)
     return column_vector
 
-# Step 10 - fill_even_indices_with_sin (not yet solved)
-# TODO: implement
+# Step 10 - fill_even_indices_with_sin
+import torch
+
+def fill_even_indices_with_sin(pe, position, div_term):
+    pe[:, 0::2] = torch.sin(position * div_term)
+    return pe
 
 # Step 11 - fill_odd_indices_with_cos (not yet solved)
 # TODO: implement
