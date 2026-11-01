@@ -147,8 +147,16 @@ def add_positional_encoding_to_embeddings(embedded_batch, positional_encoding):
     # Add the first L rows of positional encoding to the embedded batch with broadcasting
     return embedded_batch + positional_encoding[: embedded_batch.size(1)]
 
-# Step 14 - build_padding_mask (not yet solved)
-# TODO: implement
+# Step 14 - build_padding_mask
+import torch
+
+
+def build_padding_mask(token_ids, pad_id):
+    """Return a (B, 1, 1, L) bool mask: True where token_ids != pad_id."""
+    # Create the base boolean mask (B, L) where real tokens are True and padding is False
+    mask = token_ids != pad_id
+    # Unsqueeze dimensions twice to shape it as (B, 1, 1, L) for multi-head attention broadcasting
+    return mask.unsqueeze(1).unsqueeze(1)
 
 # Step 15 - build_causal_mask (not yet solved)
 # TODO: implement
