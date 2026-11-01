@@ -87,8 +87,21 @@ def scale_embeddings_by_sqrt_d_model(embeddings, d_model):
     scaled_embeddings = embeddings * scaling_factor
     return scaled_embeddings
 
-# Step 8 - compute_positional_div_term (not yet solved)
-# TODO: implement
+# Step 8 - compute_positional_div_term
+import torch
+
+def compute_positional_div_term(d_model):
+    """Computes the 1D frequency divisor tensor of length d_model // 2."""
+    half_dim = d_model // 2
+    
+    div_terms = []
+    
+    for i in range(half_dim):
+        exponent = -(2 * i) / d_model * torch.log(torch.tensor(10000.0))
+        val = torch.exp(exponent)
+        div_terms.append(val.item())
+        
+    return torch.tensor(div_terms, dtype=torch.float32)
 
 # Step 9 - build_position_index_column (not yet solved)
 # TODO: implement
