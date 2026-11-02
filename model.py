@@ -214,8 +214,30 @@ import torch
 def apply_attention_weights_to_values(weights, v):
     return torch.matmul(weights, v)
 
-# Step 22 - scaled_dot_product_attention (not yet solved)
-# TODO: implement
+# Step 22 - scaled_dot_product_attention
+import torch
+
+def scaled_dot_product_attention(q, k, v, mask=None):
+    # 1. Compute raw attention scores
+    scores = torch.matmul(q, k.transpose(-1, -2))
+    
+    # 2. Scale by the square root of the key dimension (d_k)
+    d_k = q.size(-1)
+    scores = scores / (d_k ** 0.5)
+    
+    # 3. Apply mask if provided
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, float('-inf'))
+        
+    # 4. Compute attention weights via softmax
+    weights = torch.softmax(scores, dim=-1)
+    
+    # Handle rows that are entirely -inf to prevent NaNs
+    all_inf_mask = torch.isinf(scores) & (scores < 0)
+    weights = weights.masked_fill(all_inf_mask, 0.0)
+    
+    # 5. Apply weights to values
+    return torch.matmul(weights, v), weights
 
 # Step 23 - split_last_dim_into_heads (not yet solved)
 # TODO: implement
