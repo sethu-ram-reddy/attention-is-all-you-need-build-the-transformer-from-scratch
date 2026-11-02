@@ -169,11 +169,17 @@ def build_causal_mask(seq_len):
     # Unsqueeze dimensions twice to shape it as (1, 1, seq_len, seq_len) for attention broadcasting
     return mask.unsqueeze(0).unsqueeze(0)
 
-# Step 16 - combine_padding_and_causal_masks (not yet solved)
-# TODO: implement
+# Step 16 - combine_padding_and_causal_masks
+import torch
 
-# Step 17 - compute_raw_attention_scores (not yet solved)
-# TODO: implement
+def combine_padding_and_causal_masks(padding_mask, causal_mask):
+    return padding_mask & causal_mask
+
+# Step 17 - compute_raw_attention_scores
+import torch
+
+def compute_raw_attention_scores(q, k):
+    return torch.matmul(q, k.transpose(-1, -2))
 
 # Step 18 - scale_attention_scores (not yet solved)
 # TODO: implement
