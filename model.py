@@ -323,8 +323,13 @@ def assemble_multi_head_attention_forward(query, key, value, w_q, w_k, w_v, w_o,
     # 4. Merge heads and project output
     return merge_heads_and_project_output(context, w_o, None)
 
-# Step 32 - apply_ffn_first_linear_and_relu (not yet solved)
-# TODO: implement
+# Step 32 - apply_ffn_first_linear_and_relu
+import torch
+
+def apply_ffn_first_linear_and_relu(x, w_1, b_1):
+    # apply_linear_projection does x @ w.t(), but here w1 has shape (d_model, d_ff).
+    # To match x @ w1 + b1, we can do manual matmul and bias add:
+    return torch.relu(torch.matmul(x, w_1) + b_1)
 
 # Step 33 - apply_ffn_second_linear (not yet solved)
 # TODO: implement
