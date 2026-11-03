@@ -584,8 +584,65 @@ def init_encoder_layer_parameters(d_model, num_heads, d_ff):
     
     return parameters
 
-# Step 53 - init_decoder_layer_parameters (not yet solved)
-# TODO: implement
+# Step 53 - init_decoder_layer_parameters
+import torch
+import math
+
+def init_decoder_layer_parameters(d_model, num_heads, d_ff):
+    """Return a dict of leaf tensors with requires_grad=True for one decoder layer."""
+    std = 1.0 / math.sqrt(d_model)
+    
+    # Self-attention projection matrices (no bias)
+    w_q_self = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    w_k_self = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    w_v_self = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    w_o_self = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    
+    # Cross-attention projection matrices (no bias)
+    w_q_cross = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    w_k_cross = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    w_v_cross = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    w_o_cross = torch.randn(d_model, d_model, dtype=torch.float32) * std
+    
+    # Feed-forward weights and biases
+    w1 = torch.randn(d_model, d_ff, dtype=torch.float32) * (1.0 / math.sqrt(d_model))
+    b1 = torch.zeros(d_ff, dtype=torch.float32)
+    
+    w2 = torch.randn(d_ff, d_model, dtype=torch.float32) * (1.0 / math.sqrt(d_ff))
+    b2 = torch.zeros(d_model, dtype=torch.float32)
+    
+    # LayerNorm parameters for self-attention, cross-attention, and feed-forward
+    self_gamma = torch.ones(d_model, dtype=torch.float32)
+    self_beta = torch.zeros(d_model, dtype=torch.float32)
+    
+    cross_gamma = torch.ones(d_model, dtype=torch.float32)
+    cross_beta = torch.zeros(d_model, dtype=torch.float32)
+    
+    ffn_gamma = torch.ones(d_model, dtype=torch.float32)
+    ffn_beta = torch.zeros(d_model, dtype=torch.float32)
+    
+    parameters = {
+        'w_q_self': w_q_self.requires_grad_(True),
+        'w_k_self': w_k_self.requires_grad_(True),
+        'w_v_self': w_v_self.requires_grad_(True),
+        'w_o_self': w_o_self.requires_grad_(True),
+        'self_gamma': self_gamma.requires_grad_(True),
+        'self_beta': self_beta.requires_grad_(True),
+        'w_q_cross': w_q_cross.requires_grad_(True),
+        'w_k_cross': w_k_cross.requires_grad_(True),
+        'w_v_cross': w_v_cross.requires_grad_(True),
+        'w_o_cross': w_o_cross.requires_grad_(True),
+        'cross_gamma': cross_gamma.requires_grad_(True),
+        'cross_beta': cross_beta.requires_grad_(True),
+        'w1': w1.requires_grad_(True),
+        'b1': b1.requires_grad_(True),
+        'w2': w2.requires_grad_(True),
+        'b2': b2.requires_grad_(True),
+        'ffn_gamma': ffn_gamma.requires_grad_(True),
+        'ffn_beta': ffn_beta.requires_grad_(True),
+    }
+    
+    return parameters
 
 # Step 54 - init_embedding_and_projection_parameters (not yet solved)
 # TODO: implement
