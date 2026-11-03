@@ -809,8 +809,12 @@ def initialize_adam_optimizer_state(parameter_list):
         't': 0
     }
 
-# Step 65 - update_adam_first_moment (not yet solved)
-# TODO: implement
+# Step 65 - update_adam_first_moment
+import torch
+
+def update_adam_first_moment(m, grad, beta1):
+    """Apply one exponential moving average update for Adam's first moment."""
+    return (beta1 * m + (1.0 - beta1) * grad).detach()
 
 # Step 66 - update_adam_second_moment (not yet solved)
 # TODO: implement
