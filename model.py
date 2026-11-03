@@ -816,8 +816,12 @@ def update_adam_first_moment(m, grad, beta1):
     """Apply one exponential moving average update for Adam's first moment."""
     return (beta1 * m + (1.0 - beta1) * grad).detach()
 
-# Step 66 - update_adam_second_moment (not yet solved)
-# TODO: implement
+# Step 66 - update_adam_second_moment
+import torch
+
+def update_adam_second_moment(v_prev, grad, beta2):
+    """Return v_t = beta2 * v_prev + (1 - beta2) * grad ** 2."""
+    return (beta2 * v_prev + (1.0 - beta2) * (grad ** 2)).detach()
 
 # Step 67 - apply_adam_bias_correction (not yet solved)
 # TODO: implement
