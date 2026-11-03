@@ -490,8 +490,11 @@ import torch
 def apply_final_output_projection(decoder_output, output_projection_weight, output_projection_bias=None):
     return apply_linear_projection(decoder_output, output_projection_weight, output_projection_bias)
 
-# Step 49 - tie_output_projection_to_token_embeddings (not yet solved)
-# TODO: implement
+# Step 49 - tie_output_projection_to_token_embeddings
+import torch
+
+def tie_output_projection_to_token_embeddings(token_embedding_weight):
+    return token_embedding_weight.t()
 
 # Step 50 - apply_log_softmax_over_vocab (not yet solved)
 # TODO: implement
