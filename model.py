@@ -502,8 +502,45 @@ import torch
 def apply_log_softmax_over_vocab(logits):
     return torch.log_softmax(logits, dim=-1)
 
-# Step 51 - run_transformer_forward (not yet solved)
-# TODO: implement
+# Step 51 - run_transformer_forward
+import torch
+
+def run_transformer_forward(src_ids, tgt_ids, model_params, num_heads, pad_id):
+    d_model = model_params['src_embedding'].shape[1]
+    
+    # 1. Embed and scale source and target
+    src_emb = model_params['src_embedding'][src_ids]
+    src_emb = scale_embeddings_by_sqrt_d_model(src_emb, d_model)
+    
+    tgt_emb = model_params['tgt_embedding'][tgt_ids]
+    tgt_emb = scale_embeddings_by_sqrt_d_model(tgt_emb, d_model)
+    
+    # 2. Add positional encodings
+    src_pe = build_sinusoidal_positional_encoding(src_ids.shape[1], d_model)
+    tgt_pe = build_sinusoidal_positional_encoding(tgt_ids.shape[1], d_model)
+    
+    # Ensure PE matches device and dtype if needed
+    src_pe = src_pe.to(src_emb.device, dtype=src_emb.dtype)
+    tgt_pe = tgt_pe.to(tgt_emb.device, dtype=tgt_emb.dtype)
+    
+    x = add_positional_encoding_to_embeddings(src_emb, src_pe)
+    y = add_positional_encoding_to_embeddings(tgt_emb, tgt_pe)
+    
+    # 3. Build masks
+    src_padding_mask = build_padding_mask(src_ids, pad_id)
+    tgt_padding_mask = build_padding_mask(tgt_ids, pad_id)
+    tgt_causal_mask = build_causal_mask(tgt_ids.shape[1])
+    tgt_mask = combine_padding_and_causal_masks(tgt_padding_mask, tgt_causal_mask)
+    
+    # 4. Run encoder stack
+    encoder_output = stack_encoder_layers(x, model_params['encoder_layers'], num_heads, src_padding_mask)
+    
+    # 5. Run decoder stack
+    decoder_output = stack_decoder_layers(y, encoder_output, model_params['decoder_layers'], num_heads, src_padding_mask, tgt_mask)
+    
+    # 6. Project to vocabulary logits and apply log softmax
+    logits = apply_final_output_projection(decoder_output, model_params['output_projection'])
+    return apply_log_softmax_over_vocab(logits)
 
 # Step 52 - init_encoder_layer_parameters (not yet solved)
 # TODO: implement
