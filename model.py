@@ -331,8 +331,11 @@ def apply_ffn_first_linear_and_relu(x, w_1, b_1):
     # To match x @ w1 + b1, we can do manual matmul and bias add:
     return torch.relu(torch.matmul(x, w_1) + b_1)
 
-# Step 33 - apply_ffn_second_linear (not yet solved)
-# TODO: implement
+# Step 33 - apply_ffn_second_linear
+import torch
+
+def apply_ffn_second_linear(hidden, w2, b2):
+    return torch.matmul(hidden, w2) + b2
 
 # Step 34 - position_wise_feed_forward_network (not yet solved)
 # TODO: implement
