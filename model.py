@@ -666,8 +666,33 @@ def init_embedding_and_projection_parameters(vocab_size, d_model, tie_weights=Tr
         'output_projection': output_projection.requires_grad_(True),
     }
 
-# Step 55 - collect_model_parameters_into_list (not yet solved)
-# TODO: implement
+# Step 55 - collect_model_parameters_into_list
+import torch
+
+def collect_model_parameters_into_list(encoder_layer_params, decoder_layer_params, embedding_params):
+    params_list = []
+    seen_ids = set()
+    
+    def add_tensor(tensor):
+        if id(tensor) not in seen_ids:
+            seen_ids.add(id(tensor))
+            params_list.append(tensor)
+            
+    # 1. Encoder layers
+    for layer in encoder_layer_params:
+        for val in layer.values():
+            add_tensor(val)
+            
+    # 2. Decoder layers
+    for layer in decoder_layer_params:
+        for val in layer.values():
+            add_tensor(val)
+            
+    # 3. Embedding and output projection parameters
+    for val in embedding_params.values():
+        add_tensor(val)
+        
+    return params_list
 
 # Step 56 - shift_targets_right_with_start_token (not yet solved)
 # TODO: implement
