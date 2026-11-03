@@ -840,8 +840,38 @@ def compute_adam_parameter_update(m_hat, v_hat, learning_rate, epsilon):
     delta = learning_rate * m_hat / (torch.sqrt(v_hat) + epsilon)
     return delta.detach()
 
-# Step 69 - apply_adam_step_to_all_parameters (not yet solved)
-# TODO: implement
+# Step 69 - apply_adam_step_to_all_parameters
+import torch
+
+def apply_adam_step_to_all_parameters(parameter_list, optimizer_state, learning_rate, beta1=0.9, beta2=0.98, epsilon=1e-9):
+    """Run one full Adam update over every parameter in the list."""
+    # 1. Increment step counter
+    optimizer_state['t'] += 1
+    t = optimizer_state['t']
+    
+    m_list = optimizer_state['m']
+    v_list = optimizer_state['v']
+    
+    for i, p in enumerate(parameter_list):
+        if p.grad is None:
+            continue
+            
+        grad = p.grad.data
+        
+        # 2. Update first and second moments
+        m_list[i] = update_adam_first_moment(m_list[i], grad, beta1)
+        v_list[i] = update_adam_second_moment(v_list[i], grad, beta2)
+        
+        # 3. Apply bias correction
+        m_hat, v_hat = apply_adam_bias_correction(m_list[i], v_list[i], beta1, beta2, t)
+        
+        # 4. Compute parameter update delta
+        delta = compute_adam_parameter_update(m_hat, v_hat, learning_rate, epsilon)
+        
+        # 5. Subtract delta from parameter data in place
+        p.data.sub_(delta)
+        
+    return optimizer_state
 
 # Step 70 - zero_all_parameter_gradients (not yet solved)
 # TODO: implement
