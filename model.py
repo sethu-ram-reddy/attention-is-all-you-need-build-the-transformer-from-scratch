@@ -239,8 +239,13 @@ def scaled_dot_product_attention(q, k, v, mask=None):
     # 5. Apply weights to values
     return torch.matmul(weights, v), weights
 
-# Step 23 - split_last_dim_into_heads (not yet solved)
-# TODO: implement
+# Step 23 - split_last_dim_into_heads
+import torch
+
+def split_last_dim_into_heads(tensor, num_heads):
+    batch_size, seq_len, d_model = tensor.shape
+    d_k = d_model // num_heads
+    return tensor.view(batch_size, seq_len, num_heads, d_k)
 
 # Step 24 - transpose_heads_before_sequence (not yet solved)
 # TODO: implement
