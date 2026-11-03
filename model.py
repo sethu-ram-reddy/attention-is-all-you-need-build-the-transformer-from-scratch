@@ -448,8 +448,33 @@ def decoder_layer_feed_forward_sublayer(y, w1, b1, w2, b2, gamma, beta, eps=1e-5
     ffn_out = position_wise_feed_forward_network(y, w1, b1, w2, b2)
     return apply_residual_add_and_norm(y, ffn_out, gamma, beta, eps)
 
-# Step 46 - assemble_decoder_layer (not yet solved)
-# TODO: implement
+# Step 46 - assemble_decoder_layer
+import torch
+
+def assemble_decoder_layer(y, encoder_output, layer_params, num_heads, src_mask, tgt_mask):
+    # 1. Masked self-attention sublayer
+    y = decoder_layer_masked_self_attention_sublayer(
+        y, 
+        layer_params['w_q_self'], layer_params['w_k_self'], layer_params['w_v_self'], layer_params['w_o_self'], 
+        layer_params['self_gamma'], layer_params['self_beta'], 
+        num_heads, tgt_mask
+    )
+    # 2. Cross-attention sublayer
+    y = decoder_layer_cross_attention_sublayer(
+        y, 
+        encoder_output, 
+        layer_params['w_q_cross'], layer_params['w_k_cross'], layer_params['w_v_cross'], layer_params['w_o_cross'], 
+        layer_params['cross_gamma'], layer_params['cross_beta'], 
+        num_heads, src_mask
+    )
+    # 3. Feed-forward sublayer
+    y = decoder_layer_feed_forward_sublayer(
+        y, 
+        layer_params['w1'], layer_params['b1'], 
+        layer_params['w2'], layer_params['b2'], 
+        layer_params['ffn_gamma'], layer_params['ffn_beta']
+    )
+    return y
 
 # Step 47 - stack_decoder_layers (not yet solved)
 # TODO: implement
