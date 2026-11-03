@@ -988,8 +988,27 @@ def compute_candidate_scores(beam_scores, next_token_log_probs):
     """Combine each beam's running cumulative log-probability score with the next-token log probabilities."""
     return beam_scores.unsqueeze(1) + next_token_log_probs
 
-# Step 77 - select_top_k_candidates (not yet solved)
-# TODO: implement
+# Step 77 - select_top_k_candidates
+import torch
+
+def select_top_k_candidates(candidate_scores, k):
+    """Pick the k best (beam_index, token_id, score) triples from candidate_scores of shape (num_beams, vocab_size)."""
+    # Flatten the 2D score matrix to 1D
+    num_beams, vocab_size = candidate_scores.shape
+    flat_scores = candidate_scores.view(-1)
+    
+    # Get top-k values and their flat indices
+    top_scores, flat_indices = torch.topk(flat_scores, k=k, largest=True, sorted=True)
+    
+    # Recover beam indices and token IDs using vocab_size as the divisor/modulus
+    beam_indices = flat_indices // vocab_size
+    token_ids = flat_indices % vocab_size
+    
+    return {
+        'beam_indices': beam_indices.to(torch.int64),
+        'token_ids': token_ids.to(torch.int64),
+        'scores': top_scores
+    }
 
 # Step 78 - append_tokens_to_beam_sequences (not yet solved)
 # TODO: implement
