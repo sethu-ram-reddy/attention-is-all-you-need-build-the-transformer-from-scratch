@@ -823,8 +823,14 @@ def update_adam_second_moment(v_prev, grad, beta2):
     """Return v_t = beta2 * v_prev + (1 - beta2) * grad ** 2."""
     return (beta2 * v_prev + (1.0 - beta2) * (grad ** 2)).detach()
 
-# Step 67 - apply_adam_bias_correction (not yet solved)
-# TODO: implement
+# Step 67 - apply_adam_bias_correction
+import torch
+
+def apply_adam_bias_correction(m_t, v_t, beta1, beta2, step):
+    """Return bias-corrected (m_hat, v_hat) for Adam at the given step."""
+    m_hat = m_t / (1.0 - (beta1 ** step))
+    v_hat = v_t / (1.0 - (beta2 ** step))
+    return m_hat, v_hat
 
 # Step 68 - compute_adam_parameter_update (not yet solved)
 # TODO: implement

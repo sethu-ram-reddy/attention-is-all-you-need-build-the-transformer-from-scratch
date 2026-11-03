@@ -76,7 +76,7 @@ python scaffold.py
 - [x] **64.** initialize_adam_optimizer_state
 - [x] **65.** update_adam_first_moment
 - [x] **66.** update_adam_second_moment
-- [ ] **67.** apply_adam_bias_correction
+- [x] **67.** apply_adam_bias_correction
 - [ ] **68.** compute_adam_parameter_update
 - [ ] **69.** apply_adam_step_to_all_parameters
 - [ ] **70.** zero_all_parameter_gradients
