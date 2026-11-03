@@ -882,8 +882,39 @@ def zero_all_parameter_gradients(parameter_list):
         if p.grad is not None:
             p.grad = None
 
-# Step 71 - compute_batch_training_loss (not yet solved)
-# TODO: implement
+# Step 71 - compute_batch_training_loss
+import torch
+
+def compute_batch_training_loss(src_batch, tgt_batch, model_params, config):
+    """One teacher-forced forward pass -> label-smoothed KL loss averaged over non-pad tokens."""
+    pad_id = config['pad_id']
+    start_id = config['start_id']
+    vocab_size = config['vocab_size']
+    smoothing = config['smoothing']
+    num_heads = config['num_heads']
+    
+    # 1. Shift target sequence right with the start token for decoder input
+    tgt_shifted = shift_targets_right_with_start_token(tgt_batch, start_id)
+    
+    # 2. Run the full Transformer forward pass to get log probabilities over the vocabulary
+    log_probs = run_transformer_forward(src_batch, tgt_shifted, model_params, num_heads, pad_id)
+    
+    # 3. Build uniform smoothing distribution based on log_probs shape
+    dist = build_uniform_smoothing_distribution(log_probs.shape, vocab_size, smoothing)
+    
+    # 4. Set confidence on gold tokens (using unshifted target sequence tgt_batch)
+    dist = set_confidence_on_gold_tokens(dist, tgt_batch, 1.0 - smoothing)
+    
+    # 5. Zero out pad column and pad token rows
+    dist = zero_pad_column_and_pad_token_rows(dist, tgt_batch, pad_id)
+    
+    # 6. Compute label smoothed KL loss per position (summed)
+    total_loss = compute_label_smoothed_kl_loss(log_probs, dist)
+    
+    # 7. Average the loss over non-pad tokens
+    avg_loss = average_loss_over_non_pad_tokens(total_loss, tgt_batch, pad_id)
+    
+    return avg_loss
 
 # Step 72 - run_training_step_with_backprop (not yet solved)
 # TODO: implement
