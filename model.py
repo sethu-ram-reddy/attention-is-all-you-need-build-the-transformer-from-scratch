@@ -750,8 +750,13 @@ def zero_pad_column_and_pad_token_rows(smoothed_distribution, gold_token_ids, pa
     
     return out
 
-# Step 61 - compute_label_smoothed_kl_loss (not yet solved)
-# TODO: implement
+# Step 61 - compute_label_smoothed_kl_loss
+import torch
+
+def compute_label_smoothed_kl_loss(log_probabilities, smoothed_distribution):
+    """Return the summed label smoothing cross-entropy loss over all entries."""
+    loss = -torch.sum(smoothed_distribution * log_probabilities)
+    return torch.where(loss == 0, torch.zeros_like(loss), loss)
 
 # Step 62 - average_loss_over_non_pad_tokens (not yet solved)
 # TODO: implement
