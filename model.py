@@ -424,8 +424,22 @@ def decoder_layer_masked_self_attention_sublayer(y, w_q, w_k, w_v, w_o, gamma, b
     attn_out = assemble_multi_head_attention_forward(y, y, y, w_q, w_k, w_v, w_o, num_heads, mask=tgt_mask)
     return apply_residual_add_and_norm(y, attn_out, gamma, beta)
 
-# Step 44 - decoder_layer_cross_attention_sublayer (not yet solved)
-# TODO: implement
+# Step 44 - decoder_layer_cross_attention_sublayer
+import torch
+
+def decoder_layer_cross_attention_sublayer(y, encoder_output, w_q, w_k, w_v, w_o, gamma, beta, num_heads, src_mask):
+    if src_mask is not None and src_mask.ndim == 2:
+        src_mask = src_mask.unsqueeze(1).unsqueeze(1)
+    
+    attn_out = assemble_multi_head_attention_forward(
+        query=y, 
+        key=encoder_output, 
+        value=encoder_output, 
+        w_q=w_q, w_k=w_k, w_v=w_v, w_o=w_o, 
+        num_heads=num_heads, 
+        mask=src_mask
+    )
+    return apply_residual_add_and_norm(y, attn_out, gamma, beta)
 
 # Step 45 - decoder_layer_feed_forward_sublayer (not yet solved)
 # TODO: implement
