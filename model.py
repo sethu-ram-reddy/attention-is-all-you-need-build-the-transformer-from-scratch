@@ -723,8 +723,17 @@ def build_uniform_smoothing_distribution(shape, vocab_size, epsilon):
     fill_value = epsilon / (vocab_size - 2) if (vocab_size - 2) > 0 else 0.0
     return torch.full(shape, fill_value, dtype=torch.float32)
 
-# Step 59 - set_confidence_on_gold_tokens (not yet solved)
-# TODO: implement
+# Step 59 - set_confidence_on_gold_tokens
+import torch
+
+def set_confidence_on_gold_tokens(smoothed_distribution, gold_token_ids, confidence):
+    """Place confidence mass at gold-token positions of a smoothed target distribution."""
+    out = smoothed_distribution.clone()
+    batch_indices = torch.arange(smoothed_distribution.size(0)).unsqueeze(1).expand_as(gold_token_ids)
+    time_indices = torch.arange(smoothed_distribution.size(1)).unsqueeze(0).expand_as(gold_token_ids)
+    
+    out[batch_indices, time_indices, gold_token_ids] = confidence
+    return out
 
 # Step 60 - zero_pad_column_and_pad_token_rows (not yet solved)
 # TODO: implement
