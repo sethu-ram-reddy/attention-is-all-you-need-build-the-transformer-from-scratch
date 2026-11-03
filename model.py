@@ -832,8 +832,13 @@ def apply_adam_bias_correction(m_t, v_t, beta1, beta2, step):
     v_hat = v_t / (1.0 - (beta2 ** step))
     return m_hat, v_hat
 
-# Step 68 - compute_adam_parameter_update (not yet solved)
-# TODO: implement
+# Step 68 - compute_adam_parameter_update
+import torch
+
+def compute_adam_parameter_update(m_hat, v_hat, learning_rate, epsilon):
+    """Return delta = learning_rate * m_hat / (sqrt(v_hat) + epsilon); the caller subtracts it."""
+    delta = learning_rate * m_hat / (torch.sqrt(v_hat) + epsilon)
+    return delta.detach()
 
 # Step 69 - apply_adam_step_to_all_parameters (not yet solved)
 # TODO: implement
