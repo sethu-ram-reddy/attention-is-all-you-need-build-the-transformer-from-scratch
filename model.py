@@ -981,8 +981,12 @@ def compute_length_penalty(sequence_length, alpha):
     """Return the Google NMT length penalty: ((5 + sequence_length) / 6) ** alpha."""
     return float(((5 + sequence_length) / 6) ** alpha)
 
-# Step 76 - compute_candidate_scores (not yet solved)
-# TODO: implement
+# Step 76 - compute_candidate_scores
+import torch
+
+def compute_candidate_scores(beam_scores, next_token_log_probs):
+    """Combine each beam's running cumulative log-probability score with the next-token log probabilities."""
+    return beam_scores.unsqueeze(1) + next_token_log_probs
 
 # Step 77 - select_top_k_candidates (not yet solved)
 # TODO: implement
