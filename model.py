@@ -271,8 +271,14 @@ def apply_linear_projection(x, weight, bias):
         out = out + bias
     return out
 
-# Step 27 - project_to_query_key_value (not yet solved)
-# TODO: implement
+# Step 27 - project_to_query_key_value
+import torch
+
+def project_to_query_key_value(x, w_q, b_q, w_k, b_k, w_v, b_v):
+    q = apply_linear_projection(x, w_q, b_q)
+    k = apply_linear_projection(x, w_k, b_k)
+    v = apply_linear_projection(x, w_v, b_v)
+    return q, k, v
 
 # Step 28 - split_qkv_into_heads (not yet solved)
 # TODO: implement
